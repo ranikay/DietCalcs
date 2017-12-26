@@ -60,18 +60,27 @@ ui <- fluidPage(
           dataTableOutput('msj_table'),
           br(),
           h4('Quick Method'),
-          dataTableOutput('qm_table'),
+          dataTableOutput('qm_table')
+        ),
+        tabPanel('Protein & Fluids',
           br(),
           h4('Protein Range'),
-          dataTableOutput('protein_table')
-        ),
-        tabPanel('TPN', 
+          dataTableOutput('protein_table'),
           br(),
-          h4('Coming soon!')
+          h4('Fluids by Age'),
+          dataTableOutput('fluid_table'),
+          br(),
+          textOutput('protein_fluid_text')
+        ),
+        tabPanel('TPN',
+                 br(),
+                 h4('Coming soon!')
         ),
         tabPanel('Summary Report', 
           br(),
-          h4('Coming soon!')
+          h4('Click below to generate a PDF of all reports'),
+          br(),
+          downloadButton('report', 'Generate report')
         )
       )
     )

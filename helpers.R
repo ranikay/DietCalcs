@@ -1,5 +1,6 @@
 library(data.table)
 library(DT)
+library(knitr)
 
 # Basic conversions
 lb_to_kg <- function(lb){
@@ -80,13 +81,13 @@ get_qm <- function(wt_kg){
   return(dat)
 }
 
-# Quick method
-get_protein <- function(wt_kg, abw_kg){
+# Protein / fluid ranges
+by_cbw_abw <- function(wt_kg, abw_kg, values = c(.8, 1, 1.2, 1.5, 2)){
   dat = data.frame(
-    CBW = sapply(c(.8, 1, 1.2, 1.5, 2), function(k){
+    CBW = sapply(values, function(k){
       round(k * wt_kg, 1)
     }),
-    ABW = sapply(c(.8, 1, 1.2, 1.5, 2), function(k){
+    ABW = sapply(values, function(k){
       round(k * abw_kg, 1)
     })
   )

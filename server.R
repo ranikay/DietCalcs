@@ -87,12 +87,52 @@ server <- function(input, output){
               style = 'bootstrap')
   })
   
+  # ------------------------ PROTEIN / FLUID TAB ----------------------------- #
+  
   output$protein_table <- DT::renderDataTable({
-    df = get_protein(.weight_kg(), lb_to_kg(.abw_lb()))
+    df = by_cbw_abw(.weight_kg(), lb_to_kg(.abw_lb()), values = c(.8, 1, 1.2, 1.5, 2))
     datatable(df, 
               colnames = c('0.8', '1.0', '1.2', '1.5', '2'),
               rownames = c('Based on CBW', 'Based on ABW'),
               options = list(dom = 't', ordering = F),
               style = 'bootstrap')
   })
+  
+  output$fluid_table <- DT::renderDataTable({
+    df = by_cbw_abw(.weight_kg(), lb_to_kg(.abw_lb()), values = c(35, 30, 25))
+    datatable(df, 
+              colnames = c('25-52 yrs', '53-90', '90+'),
+              rownames = c('Based on CBW', 'Based on ABW'),
+              options = list(dom = 't', ordering = F),
+              style = 'bootstrap')
+  })
+  
+  output$protein_fluid_text <- renderText(
+    paste0('* Values calculated for a ', tolower(input$sex), ' patient (',
+      .height_in(), ' in, ', .weight_lb(), ' lbs)')
+  )
+  
+  # ------------------------- SUMMARY REPORT TAB ----------------------------- #
+  
+  output$report <- downloadHandler(
+    filename = 'report.html',
+    content = function(file) {
+      # Copy the report file to a temporary directory before processing it, in
+      # case we don't have write permissions to the current working dir (which
+      # can happen when deployed).
+      temp_report <- file.path(tempdir(), 'report.Rmd')
+      file.copy('report.Rmd', temp_report, overwrite = TRUE)
+      
+      # Set up parameters to pass to Rmd document
+      params <- list(sex = input$sex)
+      
+      # Knit the document, passing in the `params` list, and eval it in a
+      # child of the global environment (this isolates the code in the document
+      # from the code in this app).
+      rmarkdown::render(temp_report, output_file = file,
+                        params = params,
+                        envir = new.env(parent = globalenv())
+      )
+    }
+  )
 }

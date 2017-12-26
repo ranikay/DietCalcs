@@ -1,0 +1,19 @@
+---
+title: "Patient Report"
+author: "Consulting Dietitian"
+output: html_document
+params:
+  sex: 'Female'
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Title
+
+Text will go here
+
+```{r cars}
+cat(params$sex)
+```
